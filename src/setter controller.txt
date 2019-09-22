@@ -1,0 +1,178 @@
+package sample;
+
+import Connectivity.QuestionDBConnector;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.event.ActionEvent;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
+
+import java.io.*;
+import java.net.URL;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import static sample.Main.socket;
+
+public class QuestionSetter implements Initializable {
+
+    @FXML
+    private Button backButton;
+
+    @FXML
+    private TextField question;
+
+    @FXML
+    private TextField op1;
+
+    @FXML
+    private TextField op2;
+
+    @FXML
+    private TextField op3;
+
+    @FXML
+    private TextField op4;
+
+    @FXML
+    private TextField correctAns;
+
+    @FXML
+    private Button submit;
+
+    @FXML
+    private TextField note;
+
+    @FXML
+    private Button edit;
+
+    @FXML
+    private Button delete;
+
+    @FXML
+    private TableView<QuestionInfo> questionTable;
+
+    @FXML
+    private TableColumn<QuestionInfo, String> Question;
+
+    @FXML
+    private TableColumn<QuestionInfo, String> Option_A;
+
+    @FXML
+    private TableColumn<QuestionInfo, String> Option_B;
+
+    @FXML
+    private TableColumn<QuestionInfo, String> Option_C;
+
+    @FXML
+    private TableColumn<QuestionInfo, String> Option_D;
+
+    @FXML
+    private TableColumn<QuestionInfo, String> Correct_Answer;
+
+    @FXML
+    private TableColumn<QuestionInfo, String> Short_Note;
+
+    ObservableList<QuestionInfo>observableList= FXCollections.observableArrayList();
+
+    @FXML
+    void BackButton(ActionEvent event) throws IOException {
+        Parent Tpage= FXMLLoader.load(getClass().getResource("TeacherHome.fxml"));
+        Scene Tscene=new Scene(Tpage);
+        Stage window=(Stage)((Node)event.getSource()).getScene().getWindow();
+        window.setScene(Tscene);
+        window.show();
+
+    }
+
+    @FXML
+    void DeleteQuestion(ActionEvent event) {
+        ObservableList<QuestionInfo>allInfo,SingleInfo;
+        allInfo=questionTable.getItems();
+        SingleInfo=questionTable.getSelectionModel().getSelectedItems();
+        SingleInfo.forEach(allInfo::remove);
+    }
+
+    @FXML
+    void EditQuestion(ActionEvent event) {
+
+    }
+
+
+    @Override
+    public void initialize(URL url, ResourceBundle rb)
+    {
+        //connect database here
+        try {
+            Connection connection= QuestionDBConnector.getConnection();
+            ResultSet rs=connection.createStatement().executeQuery("SELECT * FROM QUESTION");
+            while (rs.next())
+            {
+                observableList.add(new QuestionInfo(rs.getString("question"),
+                        rs.getString("opA"),
+                        rs.getString("opB"),
+                        rs.getString("opC"),
+                        rs.getString("opD"),
+                        rs.getString("correctans"),
+                        rs.getString("notes")));
+                questionTable.setItems(observableList);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Controller.class.getName()).log(Level.SEVERE,null,ex);
+        }
+
+
+        Question.setCellValueFactory(new PropertyValueFactory<>("Question"));
+        Option_A.setCellValueFactory(new PropertyValueFactory<>("Option_A"));
+        Option_B.setCellValueFactory(new PropertyValueFactory<>("Option_B"));
+        Option_C.setCellValueFactory(new PropertyValueFactory<>("Option_C"));
+        Option_D.setCellValueFactory(new PropertyValueFactory<>("Option_D"));
+        Correct_Answer.setCellValueFactory(new PropertyValueFactory<>("Correct_Answer"));
+        Short_Note.setCellValueFactory(new PropertyValueFactory<>("Short_Note"));
+    }
+
+
+
+
+
+
+    @FXML
+    void SubmitQuestion(ActionEvent event) throws IOException, SQLException {
+        QuestionInfo questionInfo=new QuestionInfo(question.getText(),op1.getText(),op2.getText(),op3.getText(),op4.getText(),correctAns.getText(),note.getText());
+        QuestionDBConnector questionDBConnector=new QuestionDBConnector();
+        Connection connection=questionDBConnector.getConnection();
+        String sql="INSERT INTO QUESTION VALUES('"+question.getText()+"','"+op1.getText()+"','"+op2.getText()+"','"+op3.getText()+"','"+op4.getText()+"','"+correctAns.getText()+"','"+note.getText()+"')";
+        Statement statement=connection.createStatement();
+        statement.executeUpdate(sql);
+        question.clear();
+        op1.clear();
+        op2.clear();
+        op3.clear();
+        op4.clear();
+        correctAns.clear();
+        note.clear();
+
+        questionTable.getItems().add(questionInfo);
+
+
+
+    }
+
+
+
+}

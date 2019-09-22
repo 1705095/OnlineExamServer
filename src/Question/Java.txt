@@ -1,0 +1,48 @@
+1. Java is a ...... language
+a. Weakly Typed
+b. Strongly Typed
+c. Moderate Typed
+d. None of these
+
+2.How many primitive data types are there in Java?
+a. 6
+b. 7
+c. 8
+d. 9
+
+3. In Java Byte,Short,int and long all of these are
+a. signed
+b. unsigned
+c. both of the above
+d. none of these
+
+4. Size of int in Java is
+a. 16 bit
+b. 32 bit
+c. 64 bit
+d. depends on execution environment
+
+5. the smallest int type is.... and its size is.... bits
+a. short,8
+b. byte,8
+c. short,16
+d. short,16
+
+6. Size of float and double in java is
+a. 32 and 64
+b. 64 and 64
+c. 32 and 32
+d. 64 and 32
+
+7.Automatic type conversion in java takes place when..
+a. Two type are compatible and size of destination type is shorter than source type.
+b. Two type are compatible and size of destination type is equal of source type.
+c. Two type are compatible and size of destination type is larger than source type.
+d. All of the above
+
+8.Which of the following automatic type conversion will bw possible?
+a. short to int
+b. byte to int
+c. int to long
+d. long to int
+
